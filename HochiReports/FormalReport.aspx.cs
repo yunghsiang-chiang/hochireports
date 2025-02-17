@@ -19,12 +19,16 @@ namespace HochiReports
             {
                 LoadSharedReport(shareCode);
             }
+            else
+            {
+                Response.Write("<script>alert('無效的分享碼');</script>");
+            }
         }
 
         // 讀取分享報表
         private async void LoadSharedReport(string shareCode)
         {
-            string apiUrl = $"http://internal.hochi.org.tw:8082/api/HochiReports/GetReportByShareCode?shareCode={shareCode}";
+            string apiUrl = $"http://internal.hochi.org.tw:8082/api/HochiReports/GetReportByShareCode/{shareCode}";
 
             using (HttpClient client = new HttpClient())
             {
