@@ -1,0 +1,70 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="HochiReports.Site" %>
+
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="utf-8" />
+    <title><asp:ContentPlaceHolder ID="TitleContent" runat="server" /></title>
+    <!-- Bootstrap CSS -->
+    <link href="/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="/Content/bootstrap-reboot.min.css" rel="stylesheet" />
+    <link href="/Content/bootstrap-grid.min.css" rel="stylesheet" />
+
+    <!-- 自訂樣式 -->
+    <%--<link href="/Content/custom.css" rel="stylesheet" />--%>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div class="container-fluid">
+            <!-- 頁首 -->
+            <header class="bg-primary text-white p-3">
+                <nav class="navbar navbar-expand-lg navbar-dark">
+                    <a class="navbar-brand" href="#">報表系統</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="切換導航">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="FormalReport.aspx">正式報表</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="ReportBuilder.aspx">報表製作區</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+
+            <div class="row">
+                <!-- 左側側邊欄 -->
+                <asp:PlaceHolder ID="SidebarContent" runat="server">
+                    <aside class="col-md-3 bg-light p-3" id="sidebar">
+                        <h5>選擇功能</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item"><a href="#">柱狀圖</a></li>
+                            <li class="list-group-item"><a href="#">圓餅圖</a></li>
+                            <li class="list-group-item"><a href="#">折線圖</a></li>
+                        </ul>
+                    </aside>
+                </asp:PlaceHolder>
+
+                <!-- 主內容區域 -->
+                <div class="<%# SidebarContent.Visible ? "col-md-9" : "col-md-12" %>" id="mainContent">
+                    <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- jQuery -->
+    <script src="/Scripts/jquery-3.7.1.min.js"></script>
+    <script src="/Scripts/jquery-ui-1.14.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="/Scripts/bootstrap.bundle.min.js"></script>
+
+    <!-- 自訂腳本 -->
+    <%--<script src="/Scripts/custom.js"></script>--%>
+</body>
+</html>
