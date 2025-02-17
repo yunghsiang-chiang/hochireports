@@ -3,11 +3,11 @@
   "WorkspaceRootPath": "C:\\Users\\egrou\\source\\repos\\HochiReports\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{626A8DE4-B2F6-48F7-BD42-8DB7952464E3}|HochiReports\\HochiReports.csproj|C:\\Users\\egrou\\source\\repos\\HochiReports\\hochireports\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "AbsoluteMoniker": "D:0:0:{626A8DE4-B2F6-48F7-BD42-8DB7952464E3}|HochiReports\\HochiReports.csproj|c:\\users\\egrou\\source\\repos\\hochireports\\hochireports\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
       "RelativeMoniker": "D:0:0:{626A8DE4-B2F6-48F7-BD42-8DB7952464E3}|HochiReports\\HochiReports.csproj|solutionrelative:hochireports\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{626A8DE4-B2F6-48F7-BD42-8DB7952464E3}|HochiReports\\HochiReports.csproj|c:\\users\\egrou\\source\\repos\\hochireports\\hochireports\\formalreport.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
+      "AbsoluteMoniker": "D:0:0:{626A8DE4-B2F6-48F7-BD42-8DB7952464E3}|HochiReports\\HochiReports.csproj|C:\\Users\\egrou\\source\\repos\\HochiReports\\hochireports\\formalreport.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
       "RelativeMoniker": "D:0:0:{626A8DE4-B2F6-48F7-BD42-8DB7952464E3}|HochiReports\\HochiReports.csproj|solutionrelative:hochireports\\formalreport.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
     },
     {
@@ -83,8 +83,7 @@
               "RelativeToolTip": "HochiReports\\FormalReport.aspx",
               "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2025-02-05T09:56:57.128Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-05T09:56:57.128Z"
             },
             {
               "$type": "Document",
@@ -95,8 +94,7 @@
               "ToolTip": "C:\\Users\\egrou\\source\\repos\\HochiReports\\HochiReports\\Site.Master",
               "RelativeToolTip": "HochiReports\\Site.Master",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2025-02-05T08:53:31.397Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-05T08:53:31.397Z"
             }
           ]
         }
