@@ -1,4 +1,6 @@
-﻿document.addEventListener("DOMContentLoaded", function () {
+﻿let tableSchema = {}; // 🔥 確保 schemaData 全域可用
+
+document.addEventListener("DOMContentLoaded", function () {
     loadTables();
 
     document.getElementById("tableSelect").addEventListener("change", function () {
@@ -22,6 +24,8 @@ function loadTables() {
                 return;
             }
 
+            tableSchema = data; // 🔥 儲存全域變數，確保 `loadColumns` 取得正確 `schemaData`
+
             const tableSelect = document.getElementById("tableSelect");
             tableSelect.innerHTML = ""; // 清空
 
@@ -33,9 +37,16 @@ function loadTables() {
                 tableSelect.appendChild(option);
             });
 
-            // 自動載入對應的欄位
+            // 自動載入第一個資料表
+            if (tables.length > 0) {
+                tableSelect.value = tables[0];
+                loadColumns(tables[0], tableSchema);
+            }
+
+            // 監聽變更事件
             tableSelect.addEventListener("change", () => {
-                loadColumns(tableSelect.value, data);
+                console.log("📌 選擇的資料表:", tableSelect.value);
+                loadColumns(tableSelect.value, tableSchema);
             });
         })
         .catch(error => console.error("載入資料表錯誤:", error));
@@ -43,10 +54,37 @@ function loadTables() {
 
 // 取得選定資料表的所有欄位
 function loadColumns(tableName, schemaData) {
-    const columnSelect = document.getElementById("columnSelect");
-    columnSelect.innerHTML = ""; // 清空
+    if (!schemaData || !schemaData.$values) {
+        console.error("❌ 錯誤: schemaData 沒有 $values，請檢查 API 回應", schemaData);
+        return;
+    }
 
+    console.log("📊 嘗試載入欄位:", tableName, schemaData);
+
+    const columnSelect = document.getElementById("columnSelect");
+    columnSelect.innerHTML = ""; // 清空選項
+
+    // 🔥 確保 `tableName` 是合法的
+    if (!tableName) {
+        console.warn("⚠️ 選擇的 tableName 為空，請檢查表單");
+        return;
+    }
+
+    // 🔍 檢查該 `tableName` 是否有欄位
     const columns = schemaData.$values.filter(item => item.table_name === tableName);
+
+    if (columns.length === 0) {
+        console.warn(`⚠️ 找不到 ${tableName} 的欄位，請確認 API 回應`);
+        return;
+    }
+
+    // 加入預設選項
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.innerText = "請選擇欄位";
+    columnSelect.appendChild(defaultOption);
+
+    // 插入 API 返回的所有欄位
     columns.forEach(column => {
         const option = document.createElement("option");
         option.value = column.column_name;
@@ -54,27 +92,46 @@ function loadColumns(tableName, schemaData) {
         columnSelect.appendChild(option);
     });
 
-    // 自動載入可用函數
+    console.log("✅ 成功載入欄位:", columns.map(c => c.column_name));
+
+    // 監聽變更事件
     columnSelect.addEventListener("change", () => {
         loadFunctions(tableName, columnSelect.value, schemaData);
     });
+
+    // 預設選擇第一個欄位
+    if (columns.length > 0) {
+        columnSelect.value = columns[0].column_name;
+        loadFunctions(tableName, columnSelect.value, schemaData);
+    }
 }
 
+
+
+
+
 function loadFunctions(tableName, columnName, schemaData) {
+    console.log(`🔍 嘗試載入函數: ${tableName}.${columnName}`);
+
     const functionSelect = document.getElementById("functionSelect");
     functionSelect.innerHTML = ""; // 清空選項
 
     const column = schemaData.$values.find(item => item.table_name === tableName && item.column_name === columnName);
 
-    if (!column || !column.allowed_functions || !column.allowed_functions.$values) {
-        console.warn("⚠️ 找不到允許的函數，請檢查 TableSchema", tableName, columnName);
+    if (!column) {
+        console.warn(`⚠️ 找不到欄位 ${columnName}，請檢查 TableSchema`, schemaData);
+        return;
+    }
+
+    if (!column.allowed_functions || !column.allowed_functions.$values) {
+        console.warn(`⚠️ 欄位 ${columnName} 沒有允許的函數`, column);
         return;
     }
 
     try {
-        const functions = column.allowed_functions.$values;  // 修正解析方式
+        const functions = column.allowed_functions.$values;
         if (!Array.isArray(functions) || functions.length === 0) {
-            console.warn("⚠️ 統計函數清單為空", columnName);
+            console.warn(`⚠️ 統計函數清單為空: ${columnName}`);
             return;
         }
 
@@ -85,11 +142,12 @@ function loadFunctions(tableName, columnName, schemaData) {
             functionSelect.appendChild(option);
         });
 
-        console.log("✅ 成功載入函數", functions);
+        console.log(`✅ 成功載入 ${columnName} 的函數:`, functions);
     } catch (error) {
         console.error("❌ 解析 allowed_functions 失敗", error);
     }
 }
+
 
 
 // 產生圖表
@@ -99,13 +157,13 @@ function generateChart() {
     const func = document.getElementById("functionSelect").value;
     const keyword = document.getElementById("keywordInput")?.value || ""; // 取得用戶輸入的關鍵字
 
-    // 修正 GROUP BY 特殊處理
-    if (func === "GROUP BY") {
-        func = "COUNT"; // 先暫時用 COUNT 避免錯誤，後端處理 GROUP BY
-    }
+    //// 修正 GROUP BY 特殊處理
+    //if (func === "GROUP BY") {
+    //    func = "COUNT"; // 先暫時用 COUNT 避免錯誤，後端處理 GROUP BY
+    //}
 
     // API URL
-    let apiUrl = `http://internal.hochi.org.tw:8082/api/HochiReports/GetReportData?table=${tableName}&column=${column}&function=${encodeURIComponent(func)}`;
+    let apiUrl = `http://internal.hochi.org.tw:8082/api/HochiReports/GetReportData?table=${table}&column=${column}&function=${encodeURIComponent(func)}`;
 
     // 如果是 "FILTER BY KEYWORD"，加上 keyword 參數
     if (func === "FILTER BY KEYWORD" && keyword) {
