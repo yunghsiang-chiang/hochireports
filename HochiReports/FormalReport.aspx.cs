@@ -38,7 +38,6 @@ namespace HochiReports
 
                         // 將 API 回應的 JSON 轉換成 JavaScript 格式，讓前端的 JS 處理
                         string script = $"loadReportFromShare({jsonResponse});";
-                        Response.Write(jsonResponse);
                         ClientScript.RegisterStartupScript(this.GetType(), "LoadSharedReport", script, true);
                     }
                     else
