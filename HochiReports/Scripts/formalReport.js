@@ -15,73 +15,117 @@ function loadTables() {
     fetch("http://internal.hochi.org.tw:8082/api/HochiReports/GetTableSchema")
         .then(response => response.json())
         .then(data => {
-            if (!data.$values) {
-                console.error("API 回應格式錯誤:", data);
+            console.log("📊 TableSchema:", data);
+
+            if (!data || !data.$values) {
+                console.error("❌ 無法載入 TableSchema");
                 return;
             }
 
             const tableSelect = document.getElementById("tableSelect");
-            tableSelect.innerHTML = "";
+            tableSelect.innerHTML = ""; // 清空
 
-            data.$values.forEach(item => {
-                if (!tableSelect.querySelector(`option[value="${item.table_name}"]`)) {
-                    let option = document.createElement("option");
-                    option.value = item.table_name;
-                    option.textContent = item.table_name;
-                    tableSelect.appendChild(option);
-                }
+            const tables = [...new Set(data.$values.map(item => item.table_name))];
+            tables.forEach(table => {
+                const option = document.createElement("option");
+                option.value = table;
+                option.innerText = table;
+                tableSelect.appendChild(option);
             });
 
-            if (data.$values.length > 0) {
-                loadColumns(data.$values[0].table_name);
-            }
+            // 自動載入對應的欄位
+            tableSelect.addEventListener("change", () => {
+                loadColumns(tableSelect.value, data);
+            });
         })
         .catch(error => console.error("載入資料表錯誤:", error));
 }
 
 // 取得選定資料表的所有欄位
-function loadColumns(tableName) {
-    fetch("http://internal.hochi.org.tw:8082/api/HochiReports/GetTableSchema")
-        .then(response => response.json())
-        .then(data => {
-            if (!data.$values) {
-                console.error("API 回應格式錯誤:", data);
-                return;
-            }
+function loadColumns(tableName, schemaData) {
+    const columnSelect = document.getElementById("columnSelect");
+    columnSelect.innerHTML = ""; // 清空
 
-            const columnSelect = document.getElementById("columnSelect");
-            columnSelect.innerHTML = "";
+    const columns = schemaData.$values.filter(item => item.table_name === tableName);
+    columns.forEach(column => {
+        const option = document.createElement("option");
+        option.value = column.column_name;
+        option.innerText = column.column_name;
+        columnSelect.appendChild(option);
+    });
 
-            data.$values.filter(item => item.table_name === tableName).forEach(item => {
-                let option = document.createElement("option");
-                option.value = item.column_name;
-                option.textContent = `${item.column_name} (${item.column_type})`;
-                columnSelect.appendChild(option);
-            });
-        })
-        .catch(error => console.error("載入欄位錯誤:", error));
+    // 自動載入可用函數
+    columnSelect.addEventListener("change", () => {
+        loadFunctions(tableName, columnSelect.value, schemaData);
+    });
 }
+
+function loadFunctions(tableName, columnName, schemaData) {
+    const functionSelect = document.getElementById("functionSelect");
+    functionSelect.innerHTML = ""; // 清空選項
+
+    const column = schemaData.$values.find(item => item.table_name === tableName && item.column_name === columnName);
+
+    if (!column || !column.allowed_functions || !column.allowed_functions.$values) {
+        console.warn("⚠️ 找不到允許的函數，請檢查 TableSchema", tableName, columnName);
+        return;
+    }
+
+    try {
+        const functions = column.allowed_functions.$values;  // 修正解析方式
+        if (!Array.isArray(functions) || functions.length === 0) {
+            console.warn("⚠️ 統計函數清單為空", columnName);
+            return;
+        }
+
+        functions.forEach(func => {
+            const option = document.createElement("option");
+            option.value = func;
+            option.innerText = func;
+            functionSelect.appendChild(option);
+        });
+
+        console.log("✅ 成功載入函數", functions);
+    } catch (error) {
+        console.error("❌ 解析 allowed_functions 失敗", error);
+    }
+}
+
 
 // 產生圖表
 function generateChart() {
     const table = document.getElementById("tableSelect").value;
     const column = document.getElementById("columnSelect").value;
     const func = document.getElementById("functionSelect").value;
-    const chartType = document.getElementById("chartTypeSelect").value; // 讀取圖表類型
+    const keyword = document.getElementById("keywordInput")?.value || ""; // 取得用戶輸入的關鍵字
 
-    fetch(`http://internal.hochi.org.tw:8082/api/HochiReports/GetReportData?table=${table}&column=${column}&function=${func}`)
+    // 修正 GROUP BY 特殊處理
+    if (func === "GROUP BY") {
+        func = "COUNT"; // 先暫時用 COUNT 避免錯誤，後端處理 GROUP BY
+    }
+
+    // API URL
+    let apiUrl = `http://internal.hochi.org.tw:8082/api/HochiReports/GetReportData?table=${tableName}&column=${column}&function=${encodeURIComponent(func)}`;
+
+    // 如果是 "FILTER BY KEYWORD"，加上 keyword 參數
+    if (func === "FILTER BY KEYWORD" && keyword) {
+        apiUrl += `&keyword=${encodeURIComponent(keyword)}`;
+    }
+
+
+    fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
             if (data.$values) {
-                console.log(data.$values);
-                console.log(chartType);
-                drawChart(data.$values, chartType); // ✅ 傳遞圖表類型
+                console.log("API 回應資料:", data);
+                drawChart(data.$values, document.getElementById("chartTypeSelect").value);
             } else {
                 console.error("API 回應格式錯誤:", data);
             }
         })
         .catch(error => console.error("載入報表資料錯誤:", error));
 }
+
 
 
 // 使用 D3.js 繪製長條圖
@@ -223,6 +267,15 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+document.getElementById("functionSelect").addEventListener("change", function () {
+    if (this.value === "FILTER BY KEYWORD") {
+        document.getElementById("keywordDiv").style.display = "block";
+    } else {
+        document.getElementById("keywordDiv").style.display = "none";
+    }
+});
+
 
 
 function saveReport() {

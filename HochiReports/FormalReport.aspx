@@ -1,4 +1,4 @@
-﻿<%@ Page Title="正式報表" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="FormalReport.aspx.cs" Inherits="HochiReports.FormalReport"  Async="true" %>
+﻿<%@ Page Title="正式報表" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="FormalReport.aspx.cs" Inherits="HochiReports.FormalReport" Async="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
@@ -26,6 +26,11 @@
                     <option value="line">折線圖</option>
                     <option value="pie">圓餅圖</option>
                 </select>
+
+                <div id="keywordDiv" style="display: none;">
+                    <label for="keywordInput">請輸入關鍵字</label>
+                    <input type="text" id="keywordInput" class="form-control">
+                </div>
 
 
                 <button type="button" id="generateReport" class="btn btn-primary mt-3">產生報表</button>

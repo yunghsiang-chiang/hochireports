@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\egrou\\source\\repos\\HochiReports\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{626A8DE4-B2F6-48F7-BD42-8DB7952464E3}|HochiReports\\HochiReports.csproj|c:\\users\\egrou\\source\\repos\\hochireports\\hochireports\\formalreport.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
-      "RelativeMoniker": "D:0:0:{626A8DE4-B2F6-48F7-BD42-8DB7952464E3}|HochiReports\\HochiReports.csproj|solutionrelative:hochireports\\formalreport.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{626A8DE4-B2F6-48F7-BD42-8DB7952464E3}|HochiReports\\HochiReports.csproj|c:\\users\\egrou\\source\\repos\\hochireports\\hochireports\\scripts\\formalreport.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{626A8DE4-B2F6-48F7-BD42-8DB7952464E3}|HochiReports\\HochiReports.csproj|solutionrelative:hochireports\\scripts\\formalreport.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{626A8DE4-B2F6-48F7-BD42-8DB7952464E3}|HochiReports\\HochiReports.csproj|C:\\Users\\egrou\\source\\repos\\HochiReports\\hochireports\\formalreport.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
+      "RelativeMoniker": "D:0:0:{626A8DE4-B2F6-48F7-BD42-8DB7952464E3}|HochiReports\\HochiReports.csproj|solutionrelative:hochireports\\formalreport.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{626A8DE4-B2F6-48F7-BD42-8DB7952464E3}|HochiReports\\HochiReports.csproj|C:\\Users\\egrou\\source\\repos\\HochiReports\\hochireports\\formalreport.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -30,24 +30,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "formalReport.js",
-              "DocumentMoniker": "C:\\Users\\egrou\\source\\repos\\HochiReports\\HochiReports\\Scripts\\formalReport.js",
-              "RelativeDocumentMoniker": "HochiReports\\Scripts\\formalReport.js",
-              "ToolTip": "C:\\Users\\egrou\\source\\repos\\HochiReports\\HochiReports\\Scripts\\formalReport.js",
-              "RelativeToolTip": "HochiReports\\Scripts\\formalReport.js",
-              "ViewState": "AgIAAB8BAAAAAAAAAAAcwDQBAAA/AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-02-18T05:37:14.516Z",
-              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -64,6 +51,19 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "formalReport.js",
+              "DocumentMoniker": "C:\\Users\\egrou\\source\\repos\\HochiReports\\HochiReports\\Scripts\\formalReport.js",
+              "RelativeDocumentMoniker": "HochiReports\\Scripts\\formalReport.js",
+              "ToolTip": "C:\\Users\\egrou\\source\\repos\\HochiReports\\HochiReports\\Scripts\\formalReport.js",
+              "RelativeToolTip": "HochiReports\\Scripts\\formalReport.js",
+              "ViewState": "AgIAAE8AAAAAAAAAAAAAAGQAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-02-18T05:37:14.516Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 2,
               "Title": "FormalReport.aspx.cs",
               "DocumentMoniker": "C:\\Users\\egrou\\source\\repos\\HochiReports\\HochiReports\\FormalReport.aspx.cs",
@@ -72,12 +72,11 @@
               "RelativeToolTip": "HochiReports\\FormalReport.aspx.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAADwvyYAAABGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-17T09:37:59.05Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-17T09:37:59.05Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "FormalReport.aspx",
               "DocumentMoniker": "C:\\Users\\egrou\\source\\repos\\HochiReports\\HochiReports\\FormalReport.aspx",
               "RelativeDocumentMoniker": "HochiReports\\FormalReport.aspx",
@@ -85,8 +84,7 @@
               "RelativeToolTip": "HochiReports\\FormalReport.aspx",
               "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2025-02-05T09:56:57.128Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-05T09:56:57.128Z"
             },
             {
               "$type": "Document",
@@ -98,8 +96,7 @@
               "RelativeToolTip": "HochiReports\\Site.Master",
               "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2025-02-05T08:53:31.397Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-05T08:53:31.397Z"
             }
           ]
         }
