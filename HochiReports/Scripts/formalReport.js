@@ -332,7 +332,6 @@ document.getElementById("functionSelect").addEventListener("change", function ()
 
 
 function saveReport() {
-    /*const userId = getCookie("person_id"); // 取得 user_id*/
     const userId = "14081";
     const reportName = prompt("請輸入報表名稱");
 
@@ -341,32 +340,29 @@ function saveReport() {
         return;
     }
 
-    // 獲取選擇的 function 值
+    // 取得當前選擇的 function
     const selectedFunction = document.getElementById("functionSelect")?.value || "";
 
     // 根據 functionSelect 動態設定 y_axes
     let y_axes_value;
-    if (selectedFunction.includes("(") && selectedFunction.includes(")")) {
-        // 例如 COUNT(HID)
-        y_axes_value = [selectedFunction];
-    } else if (selectedFunction === "GROUP BY") {
-        // GROUP BY 不需要 COUNT(HID)，而是用 COUNT(*)
-        y_axes_value = ["COUNT(*)"];
+    if (selectedFunction === "GROUP BY") {
+        y_axes_value = ["GROUP BY"];  // 確保 GROUP BY 使用 COUNT(*)
+    } else if (selectedFunction.includes("(") && selectedFunction.includes(")")) {
+        y_axes_value = [selectedFunction]; // 例如 COUNT(HID)
     } else {
-        // 其他情況，例如 COUNT、SUM、AVG 這類函數
-        y_axes_value = [selectedFunction];
+        y_axes_value = [selectedFunction]; // 例如 SUM, AVG, MAX, MIN
     }
 
     const reportData = {
-        user_id: userId.toString(),  // ✅ 確保 user_id 是字串
+        user_id: userId.toString(),
         report_name: reportName,
         table_name: document.getElementById("tableSelect")?.value || "",
         chart_type: document.getElementById("chartTypeSelect")?.value || "",
         x_axis: document.getElementById("columnSelect")?.value || "",
-        y_axes: JSON.stringify(y_axes_value),  // ✅ y_axes 正確儲存
+        y_axes: JSON.stringify(y_axes_value),  // ✅ 動態設定 y_axes
         category_field: null,
         stack_field: null,
-        filters: JSON.stringify({})  // ✅ 確保 filters 是字串
+        filters: JSON.stringify({})
     };
 
     console.log("送出 JSON:", reportData);
@@ -375,12 +371,7 @@ function saveReport() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(reportData)
     })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(err => { throw new Error(JSON.stringify(err)); });
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             console.log("API 回應:", data);
             if (data.share_code) {
@@ -394,6 +385,7 @@ function saveReport() {
 }
 
 
+
 document.addEventListener("DOMContentLoaded", function () {
     const reportTitle = document.getElementById("reportTitle");
     if (!reportTitle) {
@@ -405,13 +397,11 @@ document.addEventListener("DOMContentLoaded", function () {
 function loadReportFromShare(reportData) {
     console.log("載入分享報表: ", reportData);
 
-    // 檢查報表數據是否有效
     if (!reportData || !reportData.table_name || !reportData.chart_type || !reportData.x_axis || !reportData.y_axes) {
         alert("報表數據無效，無法載入");
         return;
     }
 
-    // 取得報表參數
     const chartType = reportData.chart_type;
     const xAxis = reportData.x_axis;
     const yAxes = typeof reportData.y_axes === "string" ? JSON.parse(reportData.y_axes) : reportData.y_axes;
@@ -420,44 +410,33 @@ function loadReportFromShare(reportData) {
         return;
     }
 
+    let functionParam = yAxes[0];
+
+    // 避免 COUNT(*) 被誤解為 COUNT(HID)，應該傳 COUNT
+    if (functionParam === "COUNT(*)") {
+        functionParam = "COUNT";
+    }
+
     const tableName = reportData.table_name;
 
-    // 更新頁面標題
     document.getElementById("reportTitle").innerText = reportData.report_name;
-    console.log("取得報表數據 API:", `http://internal.hochi.org.tw:8082/api/HochiReports/GetReportData?table=${tableName}&column=${xAxis}&function=${yAxes[0]}`);
+    console.log("取得報表數據 API:", `http://internal.hochi.org.tw:8082/api/HochiReports/GetReportData?table=${tableName}&column=${xAxis}&function=${functionParam}`);
 
-
-    // 發送 API 取得數據
-    fetch(`http://internal.hochi.org.tw:8082/api/HochiReports/GetReportData?table=${tableName}&column=${xAxis}&function=${yAxes[0]}`)
-        .then(response => response.json()) // **確保這裡成功解析 JSON**
+    fetch(`http://internal.hochi.org.tw:8082/api/HochiReports/GetReportData?table=${tableName}&column=${xAxis}&function=${functionParam}`)
+        .then(response => response.json())
         .then(data => {
             console.log("📊 取得的報表數據:", data);
-
             if (!data || !data.$values || data.$values.length === 0) {
                 alert("沒有找到對應的數據");
                 return;
             }
 
-            // 🛠 修正: 確保 $values 被正確傳遞
-            // 清除舊圖表
             document.getElementById("chartContainer").innerHTML = '<svg width="800" height="500"></svg>';
-            console.log(data.$values);
-            console.log(chartType);
-            // 繪製圖表
             drawChart(data.$values, chartType);
         })
         .catch(error => {
             console.error("載入報表數據錯誤: ", error);
             alert("載入報表數據失敗");
         });
-
-    // 確保 reportTitle 存在
-    const reportTitle = document.getElementById("reportTitle");
-    if (!reportTitle) {
-        console.error("❌ 錯誤: 找不到 #reportTitle，無法設定報表名稱");
-        return;
-    }
-
-    reportTitle.innerText = reportData.report_name || "未命名報表";
 }
 
