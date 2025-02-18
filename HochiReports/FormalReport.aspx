@@ -1,4 +1,4 @@
-﻿<%@ Page Title="正式報表" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="FormalReport.aspx.cs" Inherits="HochiReports.FormalReport" %>
+﻿<%@ Page Title="正式報表" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="FormalReport.aspx.cs" Inherits="HochiReports.FormalReport"  Async="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
@@ -37,6 +37,8 @@
 
             <!-- 右側圖表 -->
             <div class="col-md-9">
+                <h1 id="reportTitle">報表標題</h1>
+
                 <h3 class="text-center">報表結果</h3>
                 <div id="chartContainer">
                     <svg width="800" height="500"></svg>

@@ -73,6 +73,8 @@ function generateChart() {
         .then(response => response.json())
         .then(data => {
             if (data.$values) {
+                console.log(data.$values);
+                console.log(chartType);
                 drawChart(data.$values, chartType); // ✅ 傳遞圖表類型
             } else {
                 console.error("API 回應格式錯誤:", data);
@@ -269,6 +271,14 @@ function saveReport() {
         .catch(error => console.error("儲存報表錯誤:", error));
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    const reportTitle = document.getElementById("reportTitle");
+    if (!reportTitle) {
+        console.error("❌ 錯誤: 無法找到 #reportTitle，請檢查 HTML");
+    }
+});
+
+
 function loadReportFromShare(reportData) {
     console.log("載入分享報表: ", reportData);
 
@@ -281,27 +291,50 @@ function loadReportFromShare(reportData) {
     // 取得報表參數
     const chartType = reportData.chart_type;
     const xAxis = reportData.x_axis;
-    const yAxes = JSON.parse(reportData.y_axes); // 轉換為陣列
+    const yAxes = typeof reportData.y_axes === "string" ? JSON.parse(reportData.y_axes) : reportData.y_axes;
+    if (!Array.isArray(yAxes) || yAxes.length === 0) {
+        alert("y_axes 格式錯誤，無法載入報表");
+        return;
+    }
+
     const tableName = reportData.table_name;
 
     // 更新頁面標題
     document.getElementById("reportTitle").innerText = reportData.report_name;
+    console.log("取得報表數據 API:", `http://internal.hochi.org.tw:8082/api/HochiReports/GetReportData?table=${tableName}&column=${xAxis}&function=${yAxes[0]}`);
+
 
     // 發送 API 取得數據
     fetch(`http://internal.hochi.org.tw:8082/api/HochiReports/GetReportData?table=${tableName}&column=${xAxis}&function=${yAxes[0]}`)
-        .then(response => response.json())
+        .then(response => response.json()) // **確保這裡成功解析 JSON**
         .then(data => {
-            console.log("報表數據: ", data);
+            console.log("📊 取得的報表數據:", data);
 
+            if (!data || !data.$values || data.$values.length === 0) {
+                alert("沒有找到對應的數據");
+                return;
+            }
+
+            // 🛠 修正: 確保 $values 被正確傳遞
             // 清除舊圖表
-            document.getElementById("chartContainer").innerHTML = '<canvas id="reportChart"></canvas>';
-
+            document.getElementById("chartContainer").innerHTML = '<svg width="800" height="500"></svg>';
+            console.log(data.$values);
+            console.log(chartType);
             // 繪製圖表
-            drawChart(chartType, data);
+            drawChart(data.$values, chartType);
         })
         .catch(error => {
             console.error("載入報表數據錯誤: ", error);
             alert("載入報表數據失敗");
         });
+
+    // 確保 reportTitle 存在
+    const reportTitle = document.getElementById("reportTitle");
+    if (!reportTitle) {
+        console.error("❌ 錯誤: 找不到 #reportTitle，無法設定報表名稱");
+        return;
+    }
+
+    reportTitle.innerText = reportData.report_name || "未命名報表";
 }
 

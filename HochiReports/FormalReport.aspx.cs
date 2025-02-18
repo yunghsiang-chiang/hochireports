@@ -15,13 +15,10 @@ namespace HochiReports
             Master.FindControl("SidebarContent").Visible = false;
 
             string shareCode = Request.QueryString["share"];
+            
             if (!string.IsNullOrEmpty(shareCode))
             {
                 LoadSharedReport(shareCode);
-            }
-            else
-            {
-                Response.Write("<script>alert('無效的分享碼');</script>");
             }
         }
 
@@ -41,6 +38,7 @@ namespace HochiReports
 
                         // 將 API 回應的 JSON 轉換成 JavaScript 格式，讓前端的 JS 處理
                         string script = $"loadReportFromShare({jsonResponse});";
+                        Response.Write(jsonResponse);
                         ClientScript.RegisterStartupScript(this.GetType(), "LoadSharedReport", script, true);
                     }
                     else
