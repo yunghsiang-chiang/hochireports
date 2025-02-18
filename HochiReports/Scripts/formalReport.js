@@ -341,13 +341,29 @@ function saveReport() {
         return;
     }
 
+    // 獲取選擇的 function 值
+    const selectedFunction = document.getElementById("functionSelect")?.value || "";
+
+    // 根據 functionSelect 動態設定 y_axes
+    let y_axes_value;
+    if (selectedFunction.includes("(") && selectedFunction.includes(")")) {
+        // 例如 COUNT(HID)
+        y_axes_value = [selectedFunction];
+    } else if (selectedFunction === "GROUP BY") {
+        // GROUP BY 不需要 COUNT(HID)，而是用 COUNT(*)
+        y_axes_value = ["COUNT(*)"];
+    } else {
+        // 其他情況，例如 COUNT、SUM、AVG 這類函數
+        y_axes_value = [selectedFunction];
+    }
+
     const reportData = {
         user_id: userId.toString(),  // ✅ 確保 user_id 是字串
         report_name: reportName,
         table_name: document.getElementById("tableSelect")?.value || "",
         chart_type: document.getElementById("chartTypeSelect")?.value || "",
         x_axis: document.getElementById("columnSelect")?.value || "",
-        y_axes: JSON.stringify(["COUNT(HID)"]),  // ✅ 確保 y_axes 是字串
+        y_axes: JSON.stringify(y_axes_value),  // ✅ y_axes 正確儲存
         category_field: null,
         stack_field: null,
         filters: JSON.stringify({})  // ✅ 確保 filters 是字串
@@ -376,6 +392,7 @@ function saveReport() {
         })
         .catch(error => console.error("儲存報表錯誤:", error));
 }
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const reportTitle = document.getElementById("reportTitle");
