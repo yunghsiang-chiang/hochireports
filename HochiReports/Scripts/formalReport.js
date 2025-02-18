@@ -154,22 +154,16 @@ function loadFunctions(tableName, columnName, schemaData) {
 function generateChart() {
     const table = document.getElementById("tableSelect").value;
     const column = document.getElementById("columnSelect").value;
-    const func = document.getElementById("functionSelect").value;
-    const keyword = document.getElementById("keywordInput")?.value || ""; // 取得用戶輸入的關鍵字
+    let func = document.getElementById("functionSelect").value;
 
-    //// 修正 GROUP BY 特殊處理
-    //if (func === "GROUP BY") {
-    //    func = "COUNT"; // 先暫時用 COUNT 避免錯誤，後端處理 GROUP BY
-    //}
-
-    // API URL
-    let apiUrl = `http://internal.hochi.org.tw:8082/api/HochiReports/GetReportData?table=${table}&column=${column}&function=${encodeURIComponent(func)}`;
-
-    // 如果是 "FILTER BY KEYWORD"，加上 keyword 參數
-    if (func === "FILTER BY KEYWORD" && keyword) {
-        apiUrl += `&keyword=${encodeURIComponent(keyword)}`;
+    if (func.includes("(") && func.includes(")")) {
+        // 允許函數內部帶有欄位名稱，例如 "COUNT(HID)"
+        func = encodeURIComponent(func);
+    } else {
+        func = encodeURIComponent(func);
     }
 
+    let apiUrl = `http://internal.hochi.org.tw:8082/api/HochiReports/GetReportData?table=${table}&column=${column}&function=${func}`;
 
     fetch(apiUrl)
         .then(response => response.json())
@@ -183,6 +177,7 @@ function generateChart() {
         })
         .catch(error => console.error("載入報表資料錯誤:", error));
 }
+
 
 
 
